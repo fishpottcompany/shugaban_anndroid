@@ -1,5 +1,6 @@
 package com.shugaban.shugaban.Fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.shugaban.shugaban.Inc.Util;
 import com.shugaban.shugaban.R;
 
 public class MoviesFragment extends Fragment  implements View.OnClickListener {
@@ -82,14 +84,14 @@ public class MoviesFragment extends Fragment  implements View.OnClickListener {
         m_recommended_list_recyclerview.setHasFixedSize(true);
         m_recommended_list_recyclerview.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         m_recommended_list_recyclerview.setLayoutManager(m_recommended_list_linearlayoutmanager);
-        m_recommended_list_recyclerview.setAdapter(new NewonshugabanListRecyclerViewAdapter());
+        //m_recommended_list_recyclerview.setAdapter(new NewonshugabanListRecyclerViewAdapter());
 
         m_recommended_list_recyclerview.setItemViewCacheSize(20);
         m_recommended_list_recyclerview.setDrawingCacheEnabled(true);
         m_recommended_list_recyclerview.setHasFixedSize(true);
         m_recommended_list_recyclerview.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         m_recommended_list_recyclerview.setLayoutManager(m_recommended_list_linearlayoutmanager);
-        m_recommended_list_recyclerview.setAdapter(new CategoriesListRecyclerViewAdapter());
+        //m_recommended_list_recyclerview.setAdapter(new CategoriesListRecyclerViewAdapter());
 
 
         return view;
@@ -113,18 +115,12 @@ public class MoviesFragment extends Fragment  implements View.OnClickListener {
 
 
     private void allOnClickHandlers(View v, int position){
-        if(v.getId() == R.id.article_parent
-                || v.getId() == R.id.fragment_today_heraldofglorytitle_textview
-                || v.getId() == R.id.fragment_today_heraldofglorybody_textview
-                || v.getId() == R.id.tag_holder
-                || v.getId() == R.id.fragment_today_heraldofgloryimage_roundedcornerimageview
-                || v.getId() == R.id.fragment_today_heraldofglorylabel_textview){
-
-            setSharedPreferenceString(getActivity().getApplicationContext(), SHARED_PREF_KEY_IMAGE_ARTICLE_IMG_URL, String.valueOf(ArticleListDataGenerator.getAllData().get(position).getArticle_image()));
-            setSharedPreferenceString(getActivity().getApplicationContext(), SHARED_PREF_KEY_IMAGE_ARTICLE_TAG_TEXT, ArticleListDataGenerator.getAllData().get(position).getArticle_type());
-            setSharedPreferenceString(getActivity().getApplicationContext(), SHARED_PREF_KEY_IMAGE_ARTICLE_UPLOAD_TIME, ArticleListDataGenerator.getAllData().get(position).getCreated_at());
-            setSharedPreferenceString(getActivity().getApplicationContext(), SHARED_PREF_KEY_IMAGE_ARTICLE_ARTICLE_TITLE, ArticleListDataGenerator.getAllData().get(position).getArticle_title());
-            setSharedPreferenceString(getActivity().getApplicationContext(), SHARED_PREF_KEY_IMAGE_ARTICLE_ARTICLE_BODY, ArticleListDataGenerator.getAllData().get(position).getArticle_body());
+        if(v.getId() == R.id.article_parent){
+            Util.setSharedPreferenceString(getActivity().getApplicationContext(), SHARED_PREF_KEY_IMAGE_ARTICLE_IMG_URL, String.valueOf(ArticleListDataGenerator.getAllData().get(position).getArticle_image()));
+            Util.setSharedPreferenceString(getActivity().getApplicationContext(), SHARED_PREF_KEY_IMAGE_ARTICLE_TAG_TEXT, ArticleListDataGenerator.getAllData().get(position).getArticle_type());
+            Util.setSharedPreferenceString(getActivity().getApplicationContext(), SHARED_PREF_KEY_IMAGE_ARTICLE_UPLOAD_TIME, ArticleListDataGenerator.getAllData().get(position).getCreated_at());
+            Util.setSharedPreferenceString(getActivity().getApplicationContext(), SHARED_PREF_KEY_IMAGE_ARTICLE_ARTICLE_TITLE, ArticleListDataGenerator.getAllData().get(position).getArticle_title());
+            Util.setSharedPreferenceString(getActivity().getApplicationContext(), SHARED_PREF_KEY_IMAGE_ARTICLE_ARTICLE_BODY, ArticleListDataGenerator.getAllData().get(position).getArticle_body());
             Intent intent = new Intent(getActivity().getApplicationContext(), ImageArticleActivity.class);
             startActivity(intent);
         }
@@ -227,5 +223,32 @@ public class MoviesFragment extends Fragment  implements View.OnClickListener {
             return ArticleListDataGenerator.getAllData().size();
         }
 
+    }
+
+    private void populate_movies(){
+
+        for (int i = 0; i < linkupsSuggestionsArray.length(); i++) {
+            ArticleModel mine1 = new ArticleModel();
+            final JSONObject k = linkupsSuggestionsArray.getJSONObject(i);
+            mine1.setArticle_id(k.getInt("article_id"));
+            mine1.setArticle_type(k.getString("article_type"));
+            mine1.setArticle_title(k.getString("article_title"));
+            mine1.setArticle_body(k.getString("article_body"));
+            mine1.setArticle_image(k.getString("article_image"));
+            mine1.setCreated_at(k.getString("created_at"));
+            ArticleListDataGenerator.addOneData(mine1);
+
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    if (!getActivity().isFinishing() && m_recyclerview != null) {
+                        m_recyclerview.getAdapter().notifyItemInserted(ArticleListDataGenerator.getAllData().size());
+                        m_loading_progressbar.setVisibility(View.INVISIBLE);
+                        m_reload_imageview.setVisibility(View.INVISIBLE);
+                        m_recyclerview.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
+        }
     }
 }
