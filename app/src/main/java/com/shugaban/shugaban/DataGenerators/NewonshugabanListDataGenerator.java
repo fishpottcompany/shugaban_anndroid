@@ -5,14 +5,13 @@ import com.shugaban.shugaban.Models.MovieModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecommendedListDataGenerator {
-
+public class NewonshugabanListDataGenerator {
     // DECLARING THE DATA ARRAY LIST
     static List<MovieModel> allData = new ArrayList<>();
 
     // SETTING/RESETTING ALL SUGGESTED LINKUPS DATA
     public static void setAllDatasAfresh(List<MovieModel> newAllData) {
-        RecommendedListDataGenerator.allData = newAllData;
+        NewonshugabanListDataGenerator.allData = newAllData;
     }
 
     // ADDING ONE DATA TO ARRAY LIST
