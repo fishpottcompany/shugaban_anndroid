@@ -1,4 +1,4 @@
-# SHUGABAN - Online Movie and Rentals (Android Versiob)
+# SHUGABAN - Online Movie and Rentals (Android Version)
 **Rent or Buy Movies, and watch online**
 
 ## Features
