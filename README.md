@@ -1,4 +1,4 @@
-# SHUGABAN - Online Movie and Rentals(Admin and Vendor Portals) 
+# SHUGABAN - Online Movie and Rentals (Android Versiob)
 **Rent or Buy Movies, and watch online**
 
 ## Features
